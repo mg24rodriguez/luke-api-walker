@@ -1,23 +1,38 @@
-import logo from './logo.svg';
+import React, {useState, useEffect} from "react";
 import './App.css';
+import Navbar from './components/Navbar';
+import Info from './components/Info';
+import Search from './components/Search';
+
 
 function App() {
+
+  const[dropdownValue,setDropdownValue] = useState ('');
+  const[inputValue,setInputValue] = useState ();
+  const[data,setData] = useState();
+  const[error,setError] = useState(false);
+
+  const handleSearch = async () => {
+
+    const response = await fetch (`https://swapi.dev/api/${dropdownValue}/${inputValue}`);
+      if (response.status === 200) {
+        const data = await response.json();
+        setData(data);
+        return  setError(false);
+      } 
+      return setError(true);
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+          <Navbar />
+          <Search 
+            dropdownValue = {dropdownValue}
+            onDropdownValue = {setDropdownValue}
+            onInputValue = {setInputValue}
+            handleSearch = {handleSearch}
+          />
+          <Info data = {data} error = {error}/>
     </div>
   );
 }
